@@ -25,8 +25,8 @@ function getInitials(name: string): string {
 }
 
 const AVATAR_COLORS = [
-  '#7c5cfc', '#e05cfc', '#fc5c7d', '#fc8c5c',
-  '#5caafc', '#5cfcca', '#fcdc5c', '#a0fc5c',
+  '#a3e635', '#facc15', '#fb923c', '#f87171',
+  '#38bdf8', '#34d399', '#e879f9', '#94a3b8',
 ]
 
 function avatarColor(name: string): string {
@@ -40,7 +40,7 @@ function Avatar({ name }: { name: string }) {
   return (
     <div
       style={{ backgroundColor: bg }}
-      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-white select-none"
+      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-black select-none"
     >
       {getInitials(name)}
     </div>
@@ -55,7 +55,7 @@ function Card({ post }: { post: BuildLog }) {
         border: '1px solid var(--card-border)',
         transition: 'border-color 0.15s ease',
       }}
-      className="rounded-xl p-5 flex gap-4 hover:[border-color:#7c5cfc33] group"
+      className="rounded-xl p-5 flex gap-4 hover:[border-color:#a3e63540] group"
     >
       <Avatar name={post.name} />
       <div className="flex-1 min-w-0">
@@ -151,7 +151,7 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
           <h1
             className="text-3xl font-bold tracking-tight mb-1"
             style={{
-              background: 'linear-gradient(90deg, #e8e8f0 0%, #7c5cfc 100%)',
+              background: 'linear-gradient(90deg, #e8e8e8 0%, #a3e635 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
@@ -190,7 +190,7 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
                 border: '1px solid var(--input-border)',
                 color: 'var(--text-primary)',
               }}
-              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#7c5cfc] focus:border-transparent placeholder:text-[#444460] transition"
+              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#a3e635] focus:border-transparent placeholder:text-[#444460] transition"
             />
           </div>
 
@@ -210,7 +210,7 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
                 color: 'var(--text-primary)',
                 resize: 'vertical',
               }}
-              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#7c5cfc] focus:border-transparent placeholder:text-[#444460] transition"
+              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#a3e635] focus:border-transparent placeholder:text-[#444460] transition"
             />
           </div>
 
@@ -229,7 +229,7 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
                 border: '1px solid var(--input-border)',
                 color: 'var(--text-primary)',
               }}
-              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#7c5cfc] focus:border-transparent placeholder:text-[#444460] transition"
+              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#a3e635] focus:border-transparent placeholder:text-[#444460] transition"
             />
           </div>
 
@@ -241,7 +241,7 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
             type="submit"
             disabled={submitting || !name.trim() || !description.trim()}
             style={{ backgroundColor: 'var(--accent)' }}
-            className="rounded-lg px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#6b4de6] disabled:opacity-40 disabled:cursor-not-allowed transition self-end min-w-[100px]"
+            className="rounded-lg px-4 py-2.5 text-sm font-semibold text-black hover:bg-[#84cc16] disabled:opacity-40 disabled:cursor-not-allowed transition self-end min-w-[100px]"
           >
             {submitting ? 'Posting…' : 'Post it'}
           </button>
