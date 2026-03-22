@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase, BuildLog } from '@/lib/supabase'
 
+const YOUR_NAME = 'Varun Malani'
+
 function timeAgo(dateStr: string): string {
   const now = new Date()
   const date = new Date(dateStr)
@@ -15,34 +17,13 @@ function timeAgo(dateStr: string): string {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function getInitials(name: string): string {
-  return name
-    .trim()
-    .split(/\s+/)
-    .map((w) => w[0]?.toUpperCase() ?? '')
-    .slice(0, 2)
-    .join('')
-}
-
-const AVATAR_COLORS = [
-  '#a3e635', '#facc15', '#fb923c', '#f87171',
-  '#38bdf8', '#34d399', '#e879f9', '#94a3b8',
-]
-
-function avatarColor(name: string): string {
-  let hash = 0
-  for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) & 0xffffffff
-  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
-}
-
-function Avatar({ name }: { name: string }) {
-  const bg = avatarColor(name)
+function Avatar() {
   return (
     <div
-      style={{ backgroundColor: bg }}
-      className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold text-black select-none"
+      style={{ background: '#a3e635' }}
+      className="w-[34px] h-[34px] rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-bold text-black select-none mt-px"
     >
-      {getInitials(name)}
+      VM
     </div>
   )
 }
@@ -51,23 +32,23 @@ function Card({ post }: { post: BuildLog }) {
   return (
     <div
       style={{
-        backgroundColor: 'var(--card-bg)',
-        border: '1px solid var(--card-border)',
-        transition: 'border-color 0.15s ease',
+        backgroundColor: '#111111',
+        border: '1px solid #1e1e1e',
+        transition: 'border-color 0.15s',
       }}
-      className="rounded-xl p-5 flex gap-4 hover:[border-color:#a3e63540] group"
+      className="rounded-[10px] px-4 py-3.5 flex gap-3 hover:[border-color:#a3e63530]"
     >
-      <Avatar name={post.name} />
+      <Avatar />
       <div className="flex-1 min-w-0">
-        <div className="flex items-baseline justify-between gap-2 mb-1">
-          <span className="font-semibold text-base" style={{ color: 'var(--text-primary)' }}>
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[13px] font-semibold" style={{ color: '#e8e8e8' }}>
             {post.name}
           </span>
-          <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
+          <span className="text-[11px] flex-shrink-0 ml-3" style={{ color: '#303030' }}>
             {timeAgo(post.created_at)}
           </span>
         </div>
-        <p className="text-sm leading-relaxed mb-3" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-[13px] leading-[1.55] mb-2" style={{ color: '#606060' }}>
           {post.description}
         </p>
         {post.project_link && (
@@ -75,11 +56,11 @@ function Card({ post }: { post: BuildLog }) {
             href={post.project_link}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'var(--accent)' }}
-            className="inline-flex items-center gap-1 text-xs font-medium hover:underline"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold hover:underline"
+            style={{ color: '#a3e635' }}
           >
             View Project
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
               <path d="M2 10L10 2M10 2H4M10 2V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </a>
@@ -91,7 +72,6 @@ function Card({ post }: { post: BuildLog }) {
 
 export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[] }) {
   const [posts, setPosts] = useState<BuildLog[]>(initialPosts)
-  const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [projectLink, setProjectLink] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -117,18 +97,16 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!name.trim() || !description.trim()) return
+    if (!description.trim()) return
 
     setSubmitting(true)
     setError(null)
 
-    const payload = {
-      name: name.trim(),
+    const { error: err } = await supabase.from('build_logs').insert({
+      name: YOUR_NAME,
       description: description.trim(),
       project_link: projectLink.trim() || null,
-    }
-
-    const { error: err } = await supabase.from('build_logs').insert(payload)
+    })
 
     if (err) {
       setError('Something went wrong. Please try again.')
@@ -136,7 +114,6 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
       return
     }
 
-    setName('')
     setDescription('')
     setProjectLink('')
     setSubmitting(false)
@@ -144,119 +121,122 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--background)' }}>
-      <div className="max-w-2xl mx-auto px-4 py-12">
+    <div className="min-h-screen" style={{ backgroundColor: '#0c0c0c' }}>
+      <div className="max-w-[600px] mx-auto px-6 py-12">
+
         {/* Header */}
-        <div className="mb-10">
-          <h1
-            className="text-3xl font-bold tracking-tight mb-1"
-            style={{
-              background: 'linear-gradient(90deg, #e8e8e8 0%, #a3e635 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            Build Log
-          </h1>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-            {posts.length > 0
-              ? `${posts.length} thing${posts.length === 1 ? '' : 's'} shipped`
-              : 'Ship something. Tell everyone.'}
+        <div className="mb-6">
+          <div className="flex items-baseline justify-between mb-1">
+            <h1
+              className="text-[22px] font-bold tracking-tight"
+              style={{
+                background: 'linear-gradient(90deg, #e8e8e8 0%, #a3e635 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Build Log
+            </h1>
+            {posts.length > 0 && (
+              <span className="text-[11px]" style={{ color: '#404040' }}>
+                {posts.length} thing{posts.length === 1 ? '' : 's'} shipped
+              </span>
+            )}
+          </div>
+          <p className="text-[12px]" style={{ color: '#404040' }}>
+            What did you ship?
           </p>
         </div>
+
+        <div className="h-px mb-6" style={{ background: '#1e1e1e' }} />
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          style={{
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--card-border)',
-          }}
-          className="rounded-xl p-6 mb-8 flex flex-col gap-4"
+          className="rounded-[10px] p-4 mb-8"
+          style={{ background: '#111111', border: '1px solid #1e1e1e' }}
         >
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-              Your name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Jane Smith"
-              required
-              style={{
-                backgroundColor: 'var(--input-bg)',
-                border: '1px solid var(--input-border)',
-                color: 'var(--text-primary)',
-              }}
-              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#a3e635] focus:border-transparent placeholder:text-[#444460] transition"
-            />
+          <div className="flex gap-2.5 mb-2.5">
+            <div className="flex flex-col gap-1" style={{ flex: '0 0 180px' }}>
+              <label className="text-[10px] font-medium uppercase tracking-widest" style={{ color: '#404040' }}>
+                Project link <span style={{ color: '#2a2a2a', textTransform: 'none', letterSpacing: 0 }}>optional</span>
+              </label>
+              <input
+                type="url"
+                value={projectLink}
+                onChange={(e) => setProjectLink(e.target.value)}
+                placeholder="https://..."
+                className="rounded-md px-2.5 py-2 text-[13px] outline-none transition"
+                style={{
+                  background: '#0c0c0c',
+                  border: '1px solid #242424',
+                  color: '#e8e8e8',
+                }}
+                onFocus={e => e.target.style.borderColor = '#a3e635'}
+                onBlur={e => e.target.style.borderColor = '#242424'}
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex flex-col gap-1 mb-3">
+            <label className="text-[10px] font-medium uppercase tracking-widest" style={{ color: '#404040' }}>
               What did you ship?
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Built a dark-mode build log for my PM cohort using Next.js and Supabase..."
+              placeholder="Built something. Learned something. Shipped something..."
               required
               rows={3}
+              className="rounded-md px-2.5 py-2 text-[13px] outline-none transition"
               style={{
-                backgroundColor: 'var(--input-bg)',
-                border: '1px solid var(--input-border)',
-                color: 'var(--text-primary)',
-                resize: 'vertical',
+                background: '#0c0c0c',
+                border: '1px solid #242424',
+                color: '#e8e8e8',
+                resize: 'none',
               }}
-              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#a3e635] focus:border-transparent placeholder:text-[#444460] transition"
+              onFocus={e => e.target.style.borderColor = '#a3e635'}
+              onBlur={e => e.target.style.borderColor = '#242424'}
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
-              Project link{' '}
-              <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span>
-            </label>
-            <input
-              type="url"
-              value={projectLink}
-              onChange={(e) => setProjectLink(e.target.value)}
-              placeholder="https://..."
-              style={{
-                backgroundColor: 'var(--input-bg)',
-                border: '1px solid var(--input-border)',
-                color: 'var(--text-primary)',
-              }}
-              className="rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#a3e635] focus:border-transparent placeholder:text-[#444460] transition"
-            />
+          <div className="flex items-center justify-between">
+            <span className="text-[11px]" style={{ color: '#2a2a2a' }}>
+              Posting as <span style={{ color: '#404040' }}>{YOUR_NAME}</span>
+            </span>
+            <button
+              type="submit"
+              disabled={submitting || !description.trim()}
+              className="rounded-md px-4 py-2 text-[12px] font-bold tracking-wide transition disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ background: '#a3e635', color: '#0c0c0c' }}
+            >
+              {submitting ? 'Posting…' : 'Post it →'}
+            </button>
           </div>
 
-          {error && (
-            <p className="text-xs text-red-400">{error}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={submitting || !name.trim() || !description.trim()}
-            style={{ backgroundColor: 'var(--accent)' }}
-            className="rounded-lg px-4 py-2.5 text-sm font-semibold text-black hover:bg-[#84cc16] disabled:opacity-40 disabled:cursor-not-allowed transition self-end min-w-[100px]"
-          >
-            {submitting ? 'Posting…' : 'Post it'}
-          </button>
+          {error && <p className="mt-2 text-[11px] text-red-400">{error}</p>}
         </form>
 
         {/* Feed */}
-        <div className="flex flex-col gap-3">
+        {posts.length > 0 && (
+          <div
+            className="text-[10px] font-semibold uppercase tracking-widest mb-3"
+            style={{ color: '#303030' }}
+          >
+            Recent ships
+          </div>
+        )}
+        <div className="flex flex-col gap-0.5">
           {posts.length === 0 ? (
-            <p className="text-center py-12 text-sm" style={{ color: 'var(--text-muted)' }}>
-              No posts yet. Be the first to ship something.
+            <p className="text-center py-12 text-[13px]" style={{ color: '#303030' }}>
+              Nothing shipped yet. You go first.
             </p>
           ) : (
             posts.map((post) => <Card key={post.id} post={post} />)
           )}
         </div>
+
       </div>
     </div>
   )
