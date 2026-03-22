@@ -53,8 +53,9 @@ function Card({ post }: { post: BuildLog }) {
       style={{
         backgroundColor: 'var(--card-bg)',
         border: '1px solid var(--card-border)',
+        transition: 'border-color 0.15s ease',
       }}
-      className="rounded-xl p-5 flex gap-4"
+      className="rounded-xl p-5 flex gap-4 hover:[border-color:#7c5cfc33] group"
     >
       <Avatar name={post.name} />
       <div className="flex-1 min-w-0">
@@ -147,11 +148,21 @@ export default function BuildLogApp({ initialPosts }: { initialPosts: BuildLog[]
       <div className="max-w-2xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-3xl font-bold tracking-tight mb-1" style={{ color: 'var(--text-primary)' }}>
+          <h1
+            className="text-3xl font-bold tracking-tight mb-1"
+            style={{
+              background: 'linear-gradient(90deg, #e8e8f0 0%, #7c5cfc 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
             Build Log
           </h1>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-            Ship something. Tell everyone.
+            {posts.length > 0
+              ? `${posts.length} thing${posts.length === 1 ? '' : 's'} shipped`
+              : 'Ship something. Tell everyone.'}
           </p>
         </div>
 
